@@ -1,6 +1,10 @@
-# --------------------------------
-# bash include consul.sh MANAGED_BY_ANSIBLE
+# MANAGED_BY_ANSIBLE
+# bash include for Consul on {{inventory_hostname}}
+
 export PATH="{{hashicorp_dir_bin}}:${PATH}"
-alias cs={{hashicorp_dir_bin}}/consul
-alias csm='cs members'
-# --------------------------------
+
+alias ccn='consul catalog nodes'
+alias ccs='consul catalog services'
+alias  cm='consul members'
+
+# end
