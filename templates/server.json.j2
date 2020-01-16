@@ -26,5 +26,10 @@
         "{{ip}}"{{ "," if not loop.last else "" }}
 {% endfor %}
     ],
+{% if consul_publish_to_datadog is defined and consul_publish_to_datadog %}
+    "telemetry": {
+        "dogstatsd_addr": "127.0.0.1:8125"
+    },
+{% endif %}
     "ui": true
 }
