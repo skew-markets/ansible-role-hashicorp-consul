@@ -78,6 +78,20 @@
   tags:
   - ct-consul
 
+- name: 'render Datadog integration config file'
+  template:
+    src: datadog-conf.yaml
+    dest: /etc/datadog-agent/conf.d/consul.d/conf.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  tags:
+  - ct-consul
+  - ct-consul-datadog
+  # TODO use var for path
+  # TODO handler to restart Datadog agent
+
 - name: 'consul-{{consul_role}} service to {{consul_state}}'
   systemd:
     name: consul-{{consul_role}}
