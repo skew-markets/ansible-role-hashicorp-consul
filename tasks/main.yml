@@ -78,6 +78,15 @@
   tags:
   - ct-consul
 
+- name: 'see if Datadog is installed (cm=f)'
+  stat:
+    path: /etc/datadog-agent
+  check_mode: false
+  register: doggy
+  tags:
+  - ct-consul
+  - ct-consul-datadog
+
 - name: 'render Datadog integration config file'
   template:
     src: datadog-conf.yaml
@@ -85,6 +94,7 @@
     owner: root
     group: root
     mode: '0644'
+  when: doggy.stat.isdir is defined and doggy.stat.isdir
   become: true
   tags:
   - ct-consul
