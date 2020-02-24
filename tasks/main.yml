@@ -60,7 +60,7 @@
     owner: root
     group: root
     mode: '0600'
-  notify: handler_restart_consul
+  notify: handler_reload_consul
   no_log: true
   become: true
   tags:
