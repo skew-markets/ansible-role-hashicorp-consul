@@ -87,9 +87,9 @@
   - ct-consul
   - ct-consul-datadog
 
-- name: 'render Datadog integration config file'
+- name: 'render Datadog config file for Consul'
   template:
-    src: datadog-conf.yaml
+    src: datadog-consul-conf.yaml.j2
     dest: /etc/datadog-agent/conf.d/consul.d/conf.yaml
     owner: root
     group: root
@@ -99,7 +99,19 @@
   tags:
   - ct-consul
   - ct-consul-datadog
-  # TODO use var for path
+
+- name: 'render Datadog config file for Systemd'
+  template:
+    src: datadog-systemd-conf.yaml.j2
+    dest: /etc/datadog-agent/conf.d/systemd.d/conf.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  when: doggy.stat.isdir is defined and doggy.stat.isdir
+  become: true
+  tags:
+  - ct-consul
+  - ct-consul-datadog
   # TODO handler to restart Datadog agent
 
 - name: 'consul-{{consul_role}} service to {{consul_state}}'
