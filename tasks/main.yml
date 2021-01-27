@@ -3,12 +3,11 @@
 
 - name: 'download archive'
   get_url:
-    url: '{{hashicorp_repo}}/consul/{{consul_version}}/{{consul_target}}'
-    dest: '{{hashicorp_dir_staging}}'
+    dest: '{{hashicorp_dir_staging}}/{{consul_target}}'
     timeout: '{{hashicorp_internet_timeout}}'
+    url: '{{hashicorp_repo}}/consul/{{consul_version}}/{{consul_target}}'
     validate_certs: false
-  tags:
-  - ct-consul
+  tags: [ct-consul]
 
 - name: 'expand archive'
   unarchive:
@@ -17,8 +16,7 @@
     copy: false
   become: true
   ignore_errors: '{{ansible_check_mode}}'
-  tags:
-  - ct-consul
+  tags: [ct-consul]
 
 - name: 'push bash include'
   template:
@@ -28,8 +26,7 @@
     group: root
     mode: 0644
   become: true
-  tags:
-  - ct-consul
+  tags: [ct-consul]
 
 - name: 'directories'
   file:
@@ -40,8 +37,7 @@
     mode: '0755'
   loop: '{{consul_dirs}}'
   become: true
-  tags:
-  - ct-consul
+  tags: [ct-consul]
 
 - name: 'system account'
   user:
@@ -50,8 +46,7 @@
     system: true
     state: present
   become: true
-  tags:
-  - ct-consul
+  tags: [ct-consul]
 
 - name: 'render {{consul_role}} config'
   template:
@@ -63,8 +58,7 @@
   notify: handler_reload_consul
   no_log: true
   become: true
-  tags:
-  - ct-consul
+  tags: [ct-consul]
 
 - name: 'render systemd unit file'
   template:
@@ -75,17 +69,14 @@
     mode: '0600'
   register: reg_service
   become: true
-  tags:
-  - ct-consul
+  tags: [ct-consul]
 
 - name: 'see if Datadog is installed (cm=f)'
   stat:
     path: /etc/datadog-agent
   check_mode: false
   register: doggy
-  tags:
-  - ct-consul
-  - ct-consul-datadog
+  tags: [ct-consul, ct-consul-datadog]
 
 - name: 'render Datadog config file for Consul'
   template:
@@ -96,9 +87,7 @@
     mode: '0644'
   when: doggy.stat.isdir is defined and doggy.stat.isdir
   become: true
-  tags:
-  - ct-consul
-  - ct-consul-datadog
+  tags: [ct-consul, ct-consul-datadog]
 
 - name: 'render Datadog config file for Systemd'
   template:
@@ -109,9 +98,7 @@
     mode: '0644'
   when: doggy.stat.isdir is defined and doggy.stat.isdir
   become: true
-  tags:
-  - ct-consul
-  - ct-consul-datadog
+  tags: [ct-consul, ct-consul-datadog]
   # TODO handler to restart Datadog agent
 
 - name: 'consul-{{consul_role}} service to {{consul_state}}'
@@ -121,8 +108,7 @@
     enabled: true
     daemon_reload: '{{reg_service is changed}}'
   become: true
-  tags:
-  - ct-consul
+  tags: [ct-consul]
 
 # --------------------------------
 ...
